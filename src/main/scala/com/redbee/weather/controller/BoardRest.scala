@@ -19,9 +19,20 @@ trait BoardRest{
 
   private def getAll =
     get {
-      pathPrefix(boardPath){
+      path(boardPath){
         onComplete(BoardService.getBoards()){
           case Success(list) => complete(StatusCodes.OK, list)
+          case Failure(error) => complete(StatusCodes.InternalServerError, error)
+        }
+      }
+    }
+
+  private def getBy =
+    get {
+      pathPrefix(boardPath / Segment){ name =>
+        onComplete(BoardService getBoardBy name ){
+          case Success(Some(board)) => complete(StatusCodes.OK, board)
+          case Success(None) => complete(StatusCodes.OK)
           case Failure(error) => complete(StatusCodes.InternalServerError, error)
         }
       }
@@ -39,5 +50,5 @@ trait BoardRest{
       }
     }
 
-  val boardRoute: Route = getAll ~ save
+  val boardRoute: Route = getAll ~ getBy ~ save
 }

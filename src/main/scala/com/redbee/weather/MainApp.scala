@@ -25,7 +25,7 @@ object MainApp extends App with LazyLogging {
 
   lazy val server = IO(Http).ask(Http.Bind(listener = weatherHandler, interface = "localhost", port = 8080))
   server onComplete {
-    case Success(_) => logger.info("Weather Service Initialize...")
+    case Success(_) => logger.info("Weather Service Initialized.")
     case Failure(error) => logger.error(s"Error while initialize weather service: $error")
   }
 

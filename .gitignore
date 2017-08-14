@@ -1,2 +1,7 @@
 *.class
 *.log
+.idea/
+project/project/
+project/target/
+target/
+weather-service.iml

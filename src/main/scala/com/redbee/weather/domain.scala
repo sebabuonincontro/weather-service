@@ -16,3 +16,7 @@ case class BoardLocations(
   id: Option[Long],
   boardId: Long,
   locationId: Long)
+
+case class BoardWithLocations(
+  board: Board,
+  locations: Seq[Location])
