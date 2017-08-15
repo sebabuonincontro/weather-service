@@ -1,6 +1,7 @@
 package com.redbee.weather.controller
 
-import com.redbee.weather.{Location, MainActor}
+import com.redbee.weather.{BoardNotFound, Location}
+import com.redbee.weather.actor.MainActor
 import com.redbee.weather.service.LocationService
 import spray.http.StatusCodes
 import spray.routing.Route
@@ -18,10 +19,13 @@ trait LocationRest {
   private def save =
     post {
       path(boardPath / Segment){ name =>
-        entity(as[Location]){ newLocation =>
-          onComplete(LocationService.save(newLocation, name)){
+        entity(as[Location]){ location =>
+          onComplete( LocationService save(location, name) ){
             case Success(newLocation) => complete(StatusCodes.Created, newLocation)
-            case Failure(error) => complete(StatusCodes.InternalServerError, error)
+            case Failure(error) => error match {
+              case e: BoardNotFound => complete(StatusCodes.InternalServerError, e.getMessage )
+              case _ => complete(StatusCodes.InternalServerError)
+            }
           }
         }
       }

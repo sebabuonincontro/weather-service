@@ -1,4 +1,4 @@
-package com.redbee.weather
+package com.redbee.weather.actor
 
 import java.util.concurrent.TimeUnit.SECONDS
 

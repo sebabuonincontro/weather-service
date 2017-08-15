@@ -11,4 +11,6 @@ object Config {
   val config =  ConfigFactory.load()
 
   lazy val db = Database.forConfig("application.db.postgres", config)
+
+  lazy val poolingCallTime = config.getInt("application.pooling.time")
 }

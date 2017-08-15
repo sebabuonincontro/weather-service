@@ -1,6 +1,7 @@
 package com.redbee.weather.controller
 
-import com.redbee.weather.{Board, MainActor}
+import com.redbee.weather.actor.MainActor
+import com.redbee.weather.Board
 import com.redbee.weather.service.BoardService
 import spray.http.StatusCodes
 import spray.routing.Route
@@ -32,7 +33,7 @@ trait BoardRest{
       pathPrefix(boardPath / Segment){ name =>
         onComplete(BoardService getBoardBy name ){
           case Success(Some(board)) => complete(StatusCodes.OK, board)
-          case Success(None) => complete(StatusCodes.OK)
+          case Success(None) => complete(StatusCodes.NotFound)
           case Failure(error) => complete(StatusCodes.InternalServerError, error)
         }
       }
@@ -50,5 +51,16 @@ trait BoardRest{
       }
     }
 
-  val boardRoute: Route = getAll ~ getBy ~ save
+  private def remove =
+    delete {
+      pathPrefix(boardPath / LongNumber){ boardId =>
+        onComplete( BoardService.remove(boardId)){
+          case Success(_) => complete(StatusCodes.OK)
+          case Failure(error) => complete(StatusCodes.InternalServerError, error)
+        }
+      }
+    }
+
+  val boardRoute: Route = getAll ~ getBy ~ save ~ remove
 }
+

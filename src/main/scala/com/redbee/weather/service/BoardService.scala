@@ -29,5 +29,13 @@ object BoardService {
     }
   }
 
-  def save(board: Board) : Future[Board] = db.run(boardTable returning boardTable +=  board)
+  def save(board: Board) : Future[Board] =
+    db.run(boardTable returning boardTable +=  board)
+
+  def remove(boardId: Long): Future[Long] = {
+    for {
+      bl <- db.run(boardLocationTable.filter(_.boardId === boardId).delete)
+      board <- db.run(boardTable.filter(_.id === boardId).delete)
+    } yield board
+  }
 }
