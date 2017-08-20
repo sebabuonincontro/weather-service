@@ -28,10 +28,10 @@ trait BoardRest{
       }
     }
 
-  private def getBy =
+  private def findBy =
     get {
       pathPrefix(boardPath / Segment){ name =>
-        onComplete(BoardService getBoardBy name ){
+        onComplete(BoardService getBoardWithLocationsBy name ){
           case Success(Some(board)) => complete(StatusCodes.OK, board)
           case Success(None) => complete(StatusCodes.NotFound)
           case Failure(error) => complete(StatusCodes.InternalServerError, error)
@@ -61,6 +61,6 @@ trait BoardRest{
       }
     }
 
-  val boardRoute: Route = getAll ~ getBy ~ save ~ remove
+  val boardRoute: Route = getAll ~ findBy ~ save ~ remove
 }
 

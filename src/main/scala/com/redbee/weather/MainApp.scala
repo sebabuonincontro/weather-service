@@ -33,6 +33,8 @@ object MainApp extends App with LazyLogging {
     case Failure(error) => logger.error(s"Error while initialize weather service: $error")
   }
 
+  DbSchema.handleSchemaCreation
+
   //Pooling Actor that receive notifications from Yahoo-Weather Service
   val poolingHandler = actorSystem.actorOf(Props(new PoolingActor), name = "pooling-actor")
   actorSystem.scheduler.schedule(0 seconds, poolingCallTime minutes, poolingHandler, GetNews)

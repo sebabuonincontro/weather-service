@@ -15,7 +15,7 @@ object BoardService {
 
   def getBoards(): Future[Seq[Board]] = db.run(boardTable.result)
 
-  def getBoardBy(name: String): Future[Option[BoardWithLocations]] = {
+  def getBoardWithLocationsBy(name: String): Future[Option[BoardWithLocations]] = {
     val query = for {
       ((board, _), locations) <- boardTable filter(_.description === name) joinLeft
         boardLocationTable on(_.id === _.boardId) joinLeft
@@ -24,9 +24,13 @@ object BoardService {
 
     db.run(query.result).map{ seq =>
       seq.map{ tuple =>
-        new BoardWithLocations(tuple._1, seq.flatMap(_._2).toList)
+        BoardWithLocations(tuple._1, seq.flatMap(_._2).toList)
       }.headOption
     }
+  }
+
+  def getBoardBy(name: String): Future[Option[Board]] = {
+    db.run(boardTable.filter(_.description like name).result.headOption)
   }
 
   def save(board: Board) : Future[Board] =

@@ -1,4 +1,6 @@
 package com.redbee.weather
 
-class WeatherMessage(code: Int, description: String) extends RuntimeException
-case class BoardNotFound() extends WeatherMessage(100, "Board Not Found.")
+class BoardException extends RuntimeException
+case class BoardNotFound() extends BoardException
+case class LocationNotFound() extends BoardException
+case class ForecastNotFound() extends BoardException

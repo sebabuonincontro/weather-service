@@ -12,5 +12,11 @@ object Config {
 
   lazy val db = Database.forConfig("application.db.postgres", config)
 
+  lazy val dropSchema = config.getBoolean("application.db.dropSchema")
+
   lazy val poolingCallTime = config.getInt("application.pooling.time")
+
+  lazy val yahooApiUrl = config.getString("yahoo.url")
+  lazy val woeidSelect = config.getString("yahoo.select.woeid")
+  lazy val forecastSelect = config.getString("yahoo.select.forecast")
 }

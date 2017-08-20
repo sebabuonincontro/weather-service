@@ -2,7 +2,7 @@ package com.redbee.weather.controller
 
 import com.redbee.weather.{BoardNotFound, Location}
 import com.redbee.weather.actor.MainActor
-import com.redbee.weather.service.LocationService
+import com.redbee.weather.service.{ForecastService, LocationService}
 import spray.http.StatusCodes
 import spray.routing.Route
 
@@ -15,6 +15,8 @@ import scala.concurrent.ExecutionContext.Implicits.global
 trait LocationRest {
 
   self: MainActor =>
+
+  val locationPath = "location"
 
   private def save =
     post {
@@ -31,5 +33,16 @@ trait LocationRest {
       }
     }
 
-  val locationRoute: Route = save
+  private def getBy =
+    get {
+      path(locationPath / Segment){ woeid =>
+        onComplete( ForecastService.getByWithNews(woeid)){
+          case Success(Some(found)) => complete(StatusCodes.OK, found)
+          case Success(None) => complete(StatusCodes.NotFound)
+          case Failure(error) => complete(StatusCodes.InternalServerError, error)
+        }
+      }
+    }
+
+  val locationRoute: Route = save ~ getBy
 }

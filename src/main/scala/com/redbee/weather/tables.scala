@@ -1,5 +1,7 @@
 package com.redbee.weather
 
+import java.sql.{Date, Timestamp}
+
 import slick.driver.PostgresDriver.api._
 import slick.lifted.Tag
 /**
@@ -28,8 +30,34 @@ class BoardLocationTable(tag: Tag) extends Table[BoardLocations](tag, "board_loc
   override def * = (id.?, boardId, locationId) <> (BoardLocations.tupled, BoardLocations.unapply)
 }
 
+class NewsTable(tag: Tag) extends Table[News](tag, "news") {
+  def id = column[Long]("id", O.PrimaryKey, O.AutoInc)
+  def woeid = column[String]("woeid")
+  def date = column[String]("date")
+  def temp = column[String]("temp")
+  def condition = column[String]("condition")
+
+  override def * = (id.?, woeid, date, temp, condition) <> (News.tupled, News.unapply)
+}
+
+class ForecastTable(tag: Tag) extends Table[Forecast](tag, "forecasts") {
+  def id = column[Long]("id", O.PrimaryKey, O.AutoInc)
+  def newsId = column[Long]("newsId")
+  def woeid = column[String]("woeid")
+  def date = column[String]("date")
+  def high = column[Int]("high")
+  def low = column[Int]("low")
+  def forecast = column[String]("forecast")
+
+  override def * = (id.?, newsId, woeid, date, high, low, forecast) <> (Forecast.tupled, Forecast.unapply)
+}
+
 object Tables {
   val boardTable = TableQuery[BoardTable]
   val locationTable = TableQuery[LocationTable]
   val boardLocationTable = TableQuery[BoardLocationTable]
+  val newsTable = TableQuery[NewsTable]
+  val forecastTable = TableQuery[ForecastTable]
+
+  val list = List(boardTable, locationTable, boardLocationTable, newsTable, forecastTable)
 }

@@ -11,7 +11,6 @@ resolvers ++= Seq(
 
 libraryDependencies ++= {
   val sprayVersion = "1.3.2"
-  val jsonVersion = "3.2.11"
 
   Seq (
     "com.typesafe.akka"           %% "akka-actor"          % "2.4.4"
@@ -32,10 +31,6 @@ libraryDependencies ++= {
     ,"com.typesafe.slick"         %% "slick"               % "3.1.1"
     //PostgreSQL
     ,"org.postgresql"             % "postgresql"           % "9.4-1206-jdbc4"
-    //json
-    ,"org.json4s"                 %% "json4s-native"       % jsonVersion
-    ,"org.json4s"                 %% "json4s-ext"          % jsonVersion
-    ,"org.json4s"                 %% "json4s-jackson"      % jsonVersion
 )}
 
 mainClass in Compile := Some("com.redbee.weather.MainApp")
