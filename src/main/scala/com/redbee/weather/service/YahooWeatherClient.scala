@@ -39,7 +39,10 @@ object YahooWeatherClient extends BoardJsonProtocol
           val jsonAst = response.entity.asString.parseJson
           Future(Some(jsonAst.convertTo[MainBody[WoeidResponse]]))
         }
-        case _ => Future(None)
+        case other => {
+          logger.error(s"Error while obtain Woeid for location: $location", other)
+          Future(None)
+        }
       }
     }
   }
@@ -57,7 +60,7 @@ object YahooWeatherClient extends BoardJsonProtocol
           Future(Some(jsonAst.convertTo[MainBody[ResultResponse]]))
         }
         case other => {
-          logger.error(s"Error while take Forecast with woeid: $woeid", other)
+          logger.error(s"Error while obtain Forecast for woeid: $woeid", other)
           Future(None)
         }
       }

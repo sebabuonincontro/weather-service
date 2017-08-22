@@ -29,10 +29,6 @@ object LocationService {
     }
   }
 
-  def findBy(location: String): Future[Option[Location]] = {
-    db.run(locationTable.filter { x => x.location.toUpperCase === location.toUpperCase}.result.headOption)
-  }
-
   private def saveLocation(location: Location): Future[Location] = {
     val exists = findBy(location.location)
     exists.flatMap {
@@ -46,11 +42,15 @@ object LocationService {
     }
   }
 
+  def findBy(location: String): Future[Option[Location]] = {
+    db.run(locationTable.filter { x => x.location.toUpperCase === location.toUpperCase}.result.headOption)
+  }
+
   private def getDataFromYahoo(location: Location): Future[Location] = {
     YahooWeatherClient.getWoeidFor(location.location).flatMap{
       case Some(value) => {
         val place = value.query.results.place
-        Future(location.copy(woeid = place.woeid, location = place.name))
+        Future(location.copy(woeid = Some(place.woeid), location = place.name))
       }
       case None => Future.failed(LocationNotFound())
     }
@@ -61,6 +61,18 @@ object LocationService {
     exists.flatMap{
       case Some(boardLocation) => Future(boardLocation)
       case None => db.run(boardLocationTable returning boardLocationTable += BoardLocations(None, boardId, locationId))
+    }
+  }
+
+  def getWithNewsBy(woeid: String): Future[Option[LocationWithNewsAndForecasts]] = {
+    val query = for {
+      location <- locationTable.filter(_.woeid === woeid).result.head
+      news <- newsTable.filter(n => n.woeid === woeid).sortBy(_.id.desc).result.head
+      forecasts <- forecastTable.filter( f => f.newsId === news.id).result
+    } yield (location, news, forecasts)
+
+    db.run(query).map{ tuple =>
+      Some(LocationWithNewsAndForecasts(tuple._1, tuple._2, tuple._3))
     }
   }
 }

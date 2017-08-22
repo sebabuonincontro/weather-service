@@ -1,7 +1,9 @@
 package com.redbee.weather.controller
 
+import akka.actor.{ActorSystem, Props}
+import com.redbee.weather.actor.messages.{GetNews, GetNewsFor}
 import com.redbee.weather.{BoardNotFound, Location}
-import com.redbee.weather.actor.MainActor
+import com.redbee.weather.actor.{MainActor, PoolingActor}
 import com.redbee.weather.service.{ForecastService, LocationService}
 import spray.http.StatusCodes
 import spray.routing.Route
@@ -16,14 +18,19 @@ trait LocationRest {
 
   self: MainActor =>
 
+  val actorSystem = ActorSystem()
+  val poolingActor = actorSystem.actorOf(Props(new PoolingActor), "pooling-actor")
   val locationPath = "location"
 
   private def save =
     post {
-      path(boardPath / Segment){ name =>
+      path(boardPath / Segment){ board =>
         entity(as[Location]){ location =>
-          onComplete( LocationService save(location, name) ){
-            case Success(newLocation) => complete(StatusCodes.Created, newLocation)
+          onComplete( LocationService save(location, board) ){
+            case Success(newLocation) => {
+              poolingActor ! GetNewsFor(newLocation)
+              complete(StatusCodes.Created, newLocation)
+            }
             case Failure(error) => error match {
               case e: BoardNotFound => complete(StatusCodes.InternalServerError, e.getMessage )
               case _ => complete(StatusCodes.InternalServerError)
@@ -36,7 +43,7 @@ trait LocationRest {
   private def getBy =
     get {
       path(locationPath / Segment){ woeid =>
-        onComplete( ForecastService.getByWithNews(woeid)){
+        onComplete( LocationService.getWithNewsBy(woeid)){
           case Success(Some(found)) => complete(StatusCodes.OK, found)
           case Success(None) => complete(StatusCodes.NotFound)
           case Failure(error) => complete(StatusCodes.InternalServerError, error)

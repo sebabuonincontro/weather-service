@@ -16,7 +16,7 @@ class BoardTable(tag:Tag) extends Table[Board](tag, "boards"){
 
 class LocationTable(tag: Tag) extends Table[Location](tag, "locations"){
   def id = column[Long]("id", O.PrimaryKey, O.AutoInc)
-  def woeid = column[String]("woeid")
+  def woeid = column[Option[String]]("woeid")
   def location = column[String]("location")
 
   override def * = (id.?, woeid, location) <> (Location.tupled, Location.unapply)
@@ -33,11 +33,12 @@ class BoardLocationTable(tag: Tag) extends Table[BoardLocations](tag, "board_loc
 class NewsTable(tag: Tag) extends Table[News](tag, "news") {
   def id = column[Long]("id", O.PrimaryKey, O.AutoInc)
   def woeid = column[String]("woeid")
+  def createDate = column[Timestamp]("create_date")
   def date = column[String]("date")
   def temp = column[String]("temp")
   def condition = column[String]("condition")
 
-  override def * = (id.?, woeid, date, temp, condition) <> (News.tupled, News.unapply)
+  override def * = (id.?, woeid, createDate, date, temp, condition) <> (News.tupled, News.unapply)
 }
 
 class ForecastTable(tag: Tag) extends Table[Forecast](tag, "forecasts") {

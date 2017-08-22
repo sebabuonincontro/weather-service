@@ -4,7 +4,7 @@ import java.util.concurrent.TimeUnit.SECONDS
 
 import akka.actor.Actor
 import akka.util.Timeout
-import com.redbee.weather.controller.{BoardJsonProtocol, BoardRest, LocationRest}
+import com.redbee.weather.controller.{BoardJsonProtocol, BoardRest, CORSSupport, LocationRest}
 import spray.routing.{HttpService, Route}
 
 /**
@@ -14,7 +14,8 @@ class MainActor extends Actor
   with HttpService
   with BoardJsonProtocol
   with BoardRest
-  with LocationRest{
+  with LocationRest
+  with CORSSupport{
 
   implicit val actorRefFactory = context
 
@@ -22,5 +23,5 @@ class MainActor extends Actor
 
   override def receive: Receive = runRoute(route)
 
-  def route: Route = boardRoute ~ locationRoute
+  def route: Route = cors { boardRoute ~ locationRoute }
 }

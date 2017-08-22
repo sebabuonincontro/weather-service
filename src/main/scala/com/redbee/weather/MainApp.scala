@@ -6,7 +6,7 @@ import akka.actor.{ActorSystem, Props}
 import akka.io.IO
 import akka.pattern.ask
 import akka.util.Timeout
-import com.redbee.weather.actor.{GetNews, MainActor, PoolingActor}
+import com.redbee.weather.actor.{MainActor, PoolingActor}
 import com.typesafe.scalalogging.LazyLogging
 import spray.can.Http
 
@@ -14,6 +14,7 @@ import scala.concurrent.duration.FiniteDuration
 import scala.util.{Failure, Success}
 import scala.concurrent.duration._
 import com.redbee.weather.Config._
+import com.redbee.weather.actor.messages.GetNews
 
 /**
   * Created by bsbuon on 8/13/17.

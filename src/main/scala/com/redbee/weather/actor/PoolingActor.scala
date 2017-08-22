@@ -3,11 +3,11 @@ package com.redbee.weather.actor
 import java.time.Instant
 
 import akka.actor.{Actor, ActorLogging}
-import com.redbee.weather.LocationNotFound
-import com.redbee.weather.service.{ForecastService, LocationService, YahooWeatherClient}
+import com.redbee.weather.Location
+import com.redbee.weather.actor.messages.{GetNews, GetNewsFor}
+import com.redbee.weather.service.{ForecastService, LocationService, NewsService, YahooWeatherClient}
 
 import scala.concurrent.ExecutionContext.Implicits.global
-import scala.concurrent.Future
 import scala.util.{Failure, Success}
 
 class PoolingActor extends Actor
@@ -15,25 +15,27 @@ class PoolingActor extends Actor
 
   override def receive = {
     case GetNews => getNews
+    case GetNewsFor(location) => getNewsFor(location)
   }
 
   private def getNews() = {
-    //TODO this is a sample.
     log.info("Get Locations News at: " + Instant.now().toString)
 
-    val locations = for {
-      result <- LocationService.getAll()
-    } yield result
-
-    locations.flatMap( x => Future(x.map { location =>
-        for {
-          response <- YahooWeatherClient.getForecastFor(location.woeid)
-          news <- ForecastService.saveNewsFrom(response, location.woeid)
-        } yield news
-
-    }))
+    LocationService.getAll().onComplete{
+      case Success(locations) => locations map getNewsFor
+      case Failure(error) => log.error("PoolingActor - Error while obtain locations :", error)
+    }
   }
 
+  private def getNewsFor(location: Location) = {
+    for {
+      response <- YahooWeatherClient.getForecastFor(location.woeid.get)
+      news <- NewsService.saveNewsFrom(response, location.woeid.get)
+    } yield news
+  }
 }
 
-case class GetNews()
+object messages {
+  case class GetNews()
+  case class GetNewsFor(location: Location)
+}

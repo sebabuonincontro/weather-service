@@ -14,7 +14,7 @@
     <logger name="slick.jdbc.JdbcBackend.statement" level="DEBUG" >
         <appender-ref ref="console"/>
     </logger>
-    <logger bane="slick.jdbc.StatementInvoker.result" level="DEBUG" >
+    <logger bane="slick.jdbc.StatementInvoker.result" level="INFO" >
         <appender-ref ref="console"/>
     </logger>
 </configuration>

@@ -1,12 +1,14 @@
 package com.redbee.weather
 
+import java.sql.Timestamp
+
 case class Board(
   id: Option[Long],
   description: String)
 
 case class Location(
   id: Option[Long],
-  woeid: String,
+  woeid: Option[String],
   location: String)
 
 case class BoardLocations(
@@ -21,6 +23,7 @@ case class BoardWithLocations(
 case class News(
   id: Option[Long],
   woeid: String,
+  createDate: Timestamp,
   date: String,
   temp: String,
   condition: String)

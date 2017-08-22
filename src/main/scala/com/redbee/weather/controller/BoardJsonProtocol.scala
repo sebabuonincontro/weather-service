@@ -1,16 +1,20 @@
 package com.redbee.weather.controller
 
+import java.sql.Timestamp
+
 import com.redbee.weather.{MainBody, _}
 import spray.httpx.SprayJsonSupport
-import spray.json.DefaultJsonProtocol
+import spray.json.{DefaultJsonProtocol, DeserializationException, JsNumber, JsObject, JsValue, RootJsonFormat}
 
 trait BoardJsonProtocol extends DefaultJsonProtocol
   with SprayJsonSupport {
 
+  implicit val timestampFormat = TimestampFormat
+
   implicit val boardFormat = jsonFormat2(Board)
   implicit val locationFormat = jsonFormat3(Location)
   implicit val boardLocationFormat = jsonFormat2(BoardWithLocations)
-  implicit val newsFormat = jsonFormat5(News)
+  implicit val newsFormat = jsonFormat6(News)
   implicit val forecastFormat = jsonFormat7(Forecast)
   implicit val newFormat = jsonFormat3(LocationWithNewsAndForecasts)
 
@@ -28,4 +32,16 @@ trait BoardJsonProtocol extends DefaultJsonProtocol
   implicit val query2Format = jsonFormat1(QueryBody[ResultResponse])
   implicit val mainFormat = jsonFormat1(MainBody[ResultResponse])
 
+}
+
+object TimestampFormat extends RootJsonFormat[Timestamp] {
+  def write(obj: Timestamp) = {
+    JsObject("date" -> JsNumber(obj.getTime))
+  }
+  def read(json: JsValue) = {
+    json.asJsObject().getFields("date") match {
+      case Seq(JsNumber(time)) => new Timestamp(time.toLong)
+      case _ => throw DeserializationException("Date expected")
+    }
+  }
 }
