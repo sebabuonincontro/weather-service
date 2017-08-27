@@ -51,5 +51,15 @@ trait LocationRest {
       }
     }
 
-  val locationRoute: Route = save ~ getBy
+  private def remove =
+    delete {
+      path(boardPath / Segment / Segment){ (board, woeid) =>
+        onComplete( LocationService.remove(board, woeid)){
+          case Success(_) => complete(StatusCodes.OK)
+          case Failure(error) => complete(StatusCodes.InternalServerError, error)
+        }
+      }
+    }
+
+  val locationRoute: Route = save ~ getBy ~ remove
 }

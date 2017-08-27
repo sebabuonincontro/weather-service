@@ -1,4 +1,4 @@
-name := "example"
+name := "weather-service"
 
 version := "1.0"
 
@@ -8,6 +8,8 @@ resolvers ++= Seq(
   "Typesafe Repository" at "http://repo.typesafe.com/typesafe/releases/",
   Resolver.bintrayRepo("cakesolutions", "maven")
 )
+
+enablePlugins(JavaAppPackaging)
 
 libraryDependencies ++= {
   val sprayVersion = "1.3.2"

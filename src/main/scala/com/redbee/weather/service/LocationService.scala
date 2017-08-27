@@ -75,4 +75,12 @@ object LocationService {
       Some(LocationWithNewsAndForecasts(tuple._1, tuple._2, tuple._3))
     }
   }
+
+  def remove(boardName: String, woeid: String): Future[Int] = {
+    for {
+      location <- db.run(locationTable.filter(_.woeid === woeid).result.head)
+      board <- db.run(boardTable.filter(_.description === boardName).result.head)
+      deleted <- db.run(boardLocationTable.filter(bl => bl.boardId === board.id && bl.locationId === location.id).delete)
+    } yield deleted
+  }
 }
