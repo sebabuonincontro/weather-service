@@ -25,7 +25,7 @@ object YahooWeatherClient extends BoardJsonProtocol
   private def resolveRequest(request: HttpRequest): Future[HttpResponse] = {
     RequestLimitService.verify().flatMap{
       case true => {
-        implicit val timeout: Timeout = Timeout(10.seconds)
+        implicit val timeout: Timeout = Timeout(15.seconds)
         (IO(Http) ? request).mapTo[HttpResponse]
       }
       case false => Future.failed(YahooRequestLimitExceeded())

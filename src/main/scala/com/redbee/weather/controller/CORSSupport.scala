@@ -9,6 +9,19 @@ import spray.routing.{Directive0, MethodRejection, Rejected, RequestContext}
 trait CORSSupport {
   this: MainActor =>
 
+  private val allowOriginHeader = `Access-Control-Allow-Origin`(AllOrigins)
+  private val optionsCorsHeaders = `Access-Control-Allow-Headers`(
+    "Origin, " +
+      "X-Requested-With, " +
+      "Content-Type, " +
+      "Accept, " +
+      "Accept-Encoding, " +
+      "Accept-Language, " +
+      "Host, " +
+      "Referer, " +
+      "User-Agent"
+  )
+
   def isOptionsMethod(ctx: RequestContext): Boolean = {
     ctx.request.method.equals(HttpMethods.OPTIONS)
   }
@@ -22,9 +35,9 @@ trait CORSSupport {
         )
         ctx.complete(
           HttpResponse().withHeaders(
-            List(`Access-Control-Allow-Methods`(OPTIONS, allowedMethods: _*))
+            List(`Access-Control-Allow-Methods`(OPTIONS, allowedMethods: _*), allowOriginHeader, optionsCorsHeaders)
           )
         )
-    })
+    }).withHttpResponseHeadersMapped { headers => allowOriginHeader :: headers }
   }
 }
