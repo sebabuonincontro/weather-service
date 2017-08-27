@@ -23,8 +23,13 @@ object YahooWeatherClient extends BoardJsonProtocol
   implicit val ec = actorSystem.dispatcher
 
   private def resolveRequest(request: HttpRequest): Future[HttpResponse] = {
-    implicit val timeout: Timeout = Timeout(10.seconds)
-    (IO(Http) ? request).mapTo[HttpResponse]
+    RequestLimitService.verify().flatMap{
+      case true => {
+        implicit val timeout: Timeout = Timeout(10.seconds)
+        (IO(Http) ? request).mapTo[HttpResponse]
+      }
+      case false => Future.failed(YahooRequestLimitExceeded())
+    }
   }
 
   def getWoeidFor(location: String): Future[Option[MainBody[WoeidResponse]]] = {

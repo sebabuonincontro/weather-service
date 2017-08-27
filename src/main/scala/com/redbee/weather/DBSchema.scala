@@ -1,25 +1,26 @@
 package com.redbee.weather
 
 import scala.concurrent.Await
-import scala.util.Try
 import slick.driver.PostgresDriver.api._
 
 import scala.concurrent.duration._
-
-import slick.driver.PostgresDriver
+import scala.concurrent.duration.Duration
+import slick.jdbc.meta.MTable
+import scala.concurrent.ExecutionContext.Implicits.global
 
 object DbSchema {
 
-  val timeout = 2 minutes
-
-  val schemas: List[PostgresDriver.DDL] = Tables.list.map(_.schema)
-
-  def handleSchemaCreation: Unit = {
-    createNonexistentSchemas
+  //If the table don't exists, then the table is created.
+  def createNonExistentTables: Unit = {
+    val existing = Config.db.run(MTable.getTables)
+    val f = existing.flatMap( v => {
+      val names = v.map(mt => mt.name.name)
+      val createIfNotExist = Tables.list.filter( table =>
+        !names.contains(table.baseTableRow.tableName)).map(_.schema.create)
+      Config.db.run(DBIO.sequence(createIfNotExist))
+    })
+    Await.result(f, Duration.Inf)
   }
 
-  //If the schema exists, it is not re-created and the thrown exception is caught
-  def createNonexistentSchemas: Unit =
-    Try(Await.result(Config.db.run(DBIO.seq(schemas.map(x => x.create): _*)), timeout))
 
 }

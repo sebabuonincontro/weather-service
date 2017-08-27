@@ -37,6 +37,11 @@ case class Forecast(
   low: Int,
   forecast: String)
 
+case class RequestLimit(
+  date: Timestamp,
+  quantity: Int)
+
+//Entities used for the Rest service result
 case class LocationWithNewsAndForecasts( location: Location, news: News, forecasts: Seq[Forecast])
 
 case class MainBody[T](query: QueryBody[T])

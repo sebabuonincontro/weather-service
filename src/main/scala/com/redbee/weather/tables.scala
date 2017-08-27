@@ -53,12 +53,20 @@ class ForecastTable(tag: Tag) extends Table[Forecast](tag, "forecasts") {
   override def * = (id.?, newsId, woeid, date, high, low, forecast) <> (Forecast.tupled, Forecast.unapply)
 }
 
+class RequestLimitTable(tag: Tag) extends Table[RequestLimit](tag, "request_limit") {
+  def date = column[Timestamp]("date")
+  def quantity = column[Int]("quantity")
+
+  def * = (date, quantity) <> (RequestLimit.tupled, RequestLimit.unapply)
+}
+
 object Tables {
   val boardTable = TableQuery[BoardTable]
   val locationTable = TableQuery[LocationTable]
   val boardLocationTable = TableQuery[BoardLocationTable]
   val newsTable = TableQuery[NewsTable]
   val forecastTable = TableQuery[ForecastTable]
+  val requestLimitTable = TableQuery[RequestLimitTable]
 
-  val list = List(boardTable, locationTable, boardLocationTable, newsTable, forecastTable)
+  val list = List(boardTable, locationTable, boardLocationTable, newsTable, forecastTable, requestLimitTable)
 }

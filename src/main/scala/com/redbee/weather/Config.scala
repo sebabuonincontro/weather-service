@@ -19,4 +19,6 @@ object Config {
   lazy val yahooApiUrl = config.getString("yahoo.url")
   lazy val woeidSelect = config.getString("yahoo.select.woeid")
   lazy val forecastSelect = config.getString("yahoo.select.forecast")
+
+  lazy val petitionLimit = config.getInt("yahoo.petition.limit")
 }
