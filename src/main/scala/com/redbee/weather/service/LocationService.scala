@@ -3,7 +3,7 @@ package com.redbee.weather.service
 import com.redbee.weather._
 import com.redbee.weather.Config._
 import com.redbee.weather.Tables._
-import slick.driver.PostgresDriver.api._
+import slick.driver.MySQLDriver.api._
 
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global

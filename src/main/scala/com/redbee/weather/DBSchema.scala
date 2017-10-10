@@ -1,9 +1,8 @@
 package com.redbee.weather
 
 import scala.concurrent.Await
-import slick.driver.PostgresDriver.api._
+import slick.driver.MySQLDriver.api._
 
-import scala.concurrent.duration._
 import scala.concurrent.duration.Duration
 import slick.jdbc.meta.MTable
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -21,6 +20,5 @@ object DbSchema {
     })
     Await.result(f, Duration.Inf)
   }
-
 
 }

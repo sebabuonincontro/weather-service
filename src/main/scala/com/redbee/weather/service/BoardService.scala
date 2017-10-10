@@ -5,7 +5,7 @@ import com.redbee.weather.Config._
 
 import scala.concurrent.Future
 import com.redbee.weather.Tables._
-import slick.driver.PostgresDriver.api._
+import slick.driver.MySQLDriver.api._
 import scala.concurrent.ExecutionContext.Implicits.global
 
 /**

@@ -6,7 +6,7 @@ import com.redbee.weather.Config.db
 import com.redbee.weather._
 import com.redbee.weather.Tables.newsTable
 import org.joda.time.DateTime
-import slick.driver.PostgresDriver.api._
+import slick.driver.MySQLDriver.api._
 
 import scala.concurrent.Future
 

@@ -6,7 +6,7 @@ import com.typesafe.scalalogging.LazyLogging
 import scala.concurrent.Future
 import com.redbee.weather.Config._
 import Tables._
-import slick.driver.PostgresDriver.api._
+import slick.driver.MySQLDriver.api._
 
 object ForecastService extends LazyLogging{
 

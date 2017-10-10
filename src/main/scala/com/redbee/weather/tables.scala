@@ -1,8 +1,8 @@
 package com.redbee.weather
 
-import java.sql.{Date, Timestamp}
+import java.sql.Timestamp
 
-import slick.driver.PostgresDriver.api._
+import slick.driver.MySQLDriver.api._
 import slick.lifted.Tag
 /**
   * Created by bsbuon on 8/13/17.

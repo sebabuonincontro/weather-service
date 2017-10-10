@@ -1,7 +1,7 @@
 package com.redbee.weather
 
 import com.typesafe.config.ConfigFactory
-import slick.driver.PostgresDriver.api._
+import slick.driver.MySQLDriver.api._
 
 /**
   * Created by bsbuon on 8/13/17.
@@ -10,7 +10,7 @@ object Config {
 
   val config =  ConfigFactory.load()
 
-  lazy val db = Database.forConfig("application.db.postgres", config)
+  lazy val db = Database.forConfig("application.db.mysql", config)
 
   lazy val dropSchema = config.getBoolean("application.db.dropSchema")
 

@@ -1,13 +1,13 @@
 package com.redbee.weather.service
 
 import java.sql.Timestamp
-import java.time.{LocalDate, LocalDateTime}
+import java.time.LocalDate
 
 import com.redbee.weather.{Config, RequestLimit, YahooRequestLimitExceeded}
 
 import scala.concurrent.Future
 import com.redbee.weather.Tables._
-import slick.driver.PostgresDriver.api._
+import slick.driver.MySQLDriver.api._
 import com.redbee.weather.Config._
 import com.typesafe.scalalogging.LazyLogging
 

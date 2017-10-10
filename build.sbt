@@ -33,6 +33,8 @@ libraryDependencies ++= {
     ,"com.typesafe.slick"         %% "slick"               % "3.1.1"
     //PostgreSQL
     ,"org.postgresql"             % "postgresql"           % "9.4-1206-jdbc4"
+    //mySQL
+    ,"mysql"                      % "mysql-connector-java" % "5.1.34"
 )}
 
 mainClass in Compile := Some("com.redbee.weather.MainApp")
