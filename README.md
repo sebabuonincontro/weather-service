@@ -1,2 +1,2 @@
 # weather-service
-REST Sample project in which yahoo weather channel service is consumed using spray, akka actors and slick 3.
+REST Sample project that consumes yahoo weather channel service using spray, akka actors and slick 3.
