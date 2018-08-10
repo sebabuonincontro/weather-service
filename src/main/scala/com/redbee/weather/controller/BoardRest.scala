@@ -2,6 +2,7 @@ package com.redbee.weather.controller
 
 import com.redbee.weather.actor.MainActor
 import com.redbee.weather.Board
+import com.redbee.weather.repositories.dao.BoardDao
 import com.redbee.weather.service.BoardService
 import spray.http.StatusCodes
 import spray.routing.Route
@@ -31,7 +32,7 @@ trait BoardRest{
   private def findBy =
     get {
       pathPrefix(boardPath / Segment){ name =>
-        onComplete(BoardService getBoardWithLocationsBy name ){
+        onComplete(BoardDao getBoardAndLocations name){
           case Success(Some(board)) => complete(StatusCodes.OK, board)
           case Success(None) => complete(StatusCodes.NotFound)
           case Failure(error) => complete(StatusCodes.InternalServerError, error)

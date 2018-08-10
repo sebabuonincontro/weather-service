@@ -2,7 +2,9 @@ name := "weather-service"
 
 version := "1.0"
 
-scalaVersion := "2.11.8"
+scalaVersion := "2.11.12"
+
+val http4sVersion = "0.18.15"
 
 resolvers ++= Seq(
   "Typesafe Repository" at "http://repo.typesafe.com/typesafe/releases/",
@@ -32,9 +34,17 @@ libraryDependencies ++= {
     // -- database --
     ,"com.typesafe.slick"         %% "slick"               % "3.1.1"
     //PostgreSQL
-    ,"org.postgresql"             % "postgresql"           % "9.4-1206-jdbc4"
+    //,"org.postgresql"             % "postgresql"           % "9.4-1206-jdbc4"
     //mySQL
     ,"mysql"                      % "mysql-connector-java" % "5.1.34"
-)}
+    //doobie
+    ,"org.tpolecat"               %% "doobie-core"         % "0.5.3"
+
+    ,"org.http4s" %% "http4s-dsl" % http4sVersion
+    ,"org.http4s" %% "http4s-blaze-server" % http4sVersion
+    ,"org.http4s" %% "http4s-blaze-client" % http4sVersion
+  )}
+
+scalacOptions ++= Seq("-Ypartial-unification")
 
 mainClass in Compile := Some("com.redbee.weather.MainApp")
