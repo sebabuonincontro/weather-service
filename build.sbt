@@ -9,7 +9,10 @@ resolvers ++= Seq(
   Resolver.bintrayRepo("cakesolutions", "maven")
 )
 
-enablePlugins(JavaAppPackaging)
+enablePlugins(
+  JavaAppPackaging,
+  DockerPlugin,
+  AshScriptPlugin)
 
 libraryDependencies ++= {
   val sprayVersion = "1.3.2"
@@ -35,6 +38,9 @@ libraryDependencies ++= {
     ,"org.postgresql"             % "postgresql"           % "9.4-1206-jdbc4"
     //mySQL
     ,"mysql"                      % "mysql-connector-java" % "5.1.34"
+    ,"org.typelevel"              %% "cats-effect"         % "0.10.1"
 )}
 
 mainClass in Compile := Some("com.redbee.weather.MainApp")
+
+dockerBaseImage := "openjdk:jre-alpine"
